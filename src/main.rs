@@ -24,8 +24,8 @@ fn main() {
     let pop_empty:String = recyclebin_open.get_value("empty").unwrap();
     let pop_full:String = recyclebin_open.get_value("full").unwrap();
 
-    recyclebin_create.0.set_value("empty", format!("{}{}",file_cat_empty,",0")).unwrap();
-    recyclebin_create.0.set_value("full", format!("{}{}",file_cat_full,",0")).unwrap();
+    recyclebin_create.0.set_value("empty", &format!("{}{}",file_cat_empty,",0")).unwrap();
+    recyclebin_create.0.set_value("full", &format!("{}{}",file_cat_full,",0")).unwrap();
 
     println!("empty = {} \n full = {}", pop_empty, pop_full);
     let mut buf = String::new();
