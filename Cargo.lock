@@ -3,19 +3,19 @@
 version = 3
 
 [[package]]
-name = "RustPopCat"
+name = "resource"
+version = "0.5.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "11a7f6703c396037a02da99195e49138c37f3cc5146cb95f2f7d26debc0c5622"
+
+[[package]]
+name = "rust_pop_cat"
 version = "0.1.0"
 dependencies = [
  "resource",
  "winapi",
  "winreg",
 ]
-
-[[package]]
-name = "resource"
-version = "0.5.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "11a7f6703c396037a02da99195e49138c37f3cc5146cb95f2f7d26debc0c5622"
 
 [[package]]
 name = "winapi"
