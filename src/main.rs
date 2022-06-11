@@ -1,5 +1,4 @@
 extern crate winreg;
-extern crate winapi;
 use winreg::enums::*;
 use winreg::RegKey;
 use std::fs;
@@ -7,6 +6,8 @@ use resource::resource;
 use std::io;
 
 fn main() {
+    let mut buf = String::new();
+    
     let cat_ico_full = resource!("cat_full.dll");
     let cat_ico_empty = resource!("cat_empty.dll");
 
@@ -15,7 +16,7 @@ fn main() {
 
     if fs::write(file_cat_empty,cat_ico_empty).is_err() {
         println!("请右键 -> 管理员身份运行");
-        message_box("请右键 -> 管理员身份运行");
+        io::stdin().read_line(&mut buf).unwrap();
         panic!();
     }
     
@@ -27,8 +28,6 @@ fn main() {
     let recyclebin_open = hkcu.open_subkey(reg_key).unwrap();
     let recyclebin_create = hkcu.create_subkey(reg_key).unwrap();
 
-
-    let mut buf = String::new();
     println!("URL: https://github.com/Core2002/RustPopCat    By: 钟小白Core");
     println!("1 - 回收站变波波猫  \t  2 - 变回原来的样子");
     println!("\n请输入操作序号：");
@@ -56,17 +55,6 @@ fn main() {
     println!("友情提示：假如没反应就打开关闭然后多刷新几次");
     
     io::stdin().read_line(&mut buf).unwrap();
-}
-
-
-fn message_box(msg: &str){
-    use std::ffi::OsStr;
-    use std::iter::once;
-    use std::os::windows::ffi::OsStrExt;
-    use std::ptr::null_mut;
-    use winapi::um::winuser::{MessageBoxW, MB_OK};
-    let wide: Vec<u16> = OsStr::new(msg).encode_wide().chain(once(0)).collect();
-    unsafe { MessageBoxW(null_mut(), wide.as_ptr(), wide.as_ptr(), MB_OK) };
 }
 
 // HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\CLSID\{645FF040-5081-101B-9F08-00AA002F954E}\DefaultIcon
