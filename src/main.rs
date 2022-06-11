@@ -20,12 +20,13 @@ fn main() {
     let hkcu = RegKey::predef(HKEY_CURRENT_USER);
     let recyclebin_open = hkcu.open_subkey(reg_key).unwrap();
     let recyclebin_create = hkcu.create_subkey(reg_key).unwrap();
-    
-    let pop_empty:String = recyclebin_open.get_value("empty").unwrap();
-    let pop_full:String = recyclebin_open.get_value("full").unwrap();
 
     recyclebin_create.0.set_value("empty", &format!("{}{}",file_cat_empty,",0")).unwrap();
     recyclebin_create.0.set_value("full", &format!("{}{}",file_cat_full,",0")).unwrap();
+
+
+    let pop_empty:String = recyclebin_open.get_value("empty").unwrap();
+    let pop_full:String = recyclebin_open.get_value("full").unwrap();
 
     println!("empty = {} \n full = {}", pop_empty, pop_full);
     let mut buf = String::new();
