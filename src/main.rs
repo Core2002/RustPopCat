@@ -9,8 +9,8 @@ fn main() {
     let cat_ico_full = resource!("cat_full.dll");
     let cat_ico_empty = resource!("cat_empty.dll");
 
-    let file_cat_empty = "D:\\cat_empty.dll";
-    let file_cat_full = "D:\\cat_full.dll";
+    let file_cat_empty = "C:\\cat_empty.dll";
+    let file_cat_full = "C:\\cat_full.dll";
 
     fs::write(file_cat_empty,cat_ico_empty).unwrap();
     fs::write(file_cat_full, cat_ico_full).unwrap();
@@ -47,6 +47,7 @@ fn main() {
     let pop_empty:String = recyclebin_open.get_value("empty").unwrap();
     let pop_full:String = recyclebin_open.get_value("full").unwrap();
     println!("empty = {} , full = {}", pop_empty, pop_full);
+    println!("友情提示：假如没反应就打开关闭然后多刷新几次");
     
     io::stdin().read_line(&mut buf).unwrap();
 }
