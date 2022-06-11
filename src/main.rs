@@ -21,16 +21,34 @@ fn main() {
     let recyclebin_open = hkcu.open_subkey(reg_key).unwrap();
     let recyclebin_create = hkcu.create_subkey(reg_key).unwrap();
 
-    recyclebin_create.0.set_value("empty", &format!("{}{}",file_cat_empty,",0")).unwrap();
-    recyclebin_create.0.set_value("full", &format!("{}{}",file_cat_full,",0")).unwrap();
 
-
+    let mut buf = String::new();
+    println!("URL: https://github.com/Core2002/RustPopCat    By: 钟小白Core");
+    println!("1 - 回收站变波波猫  \t  2 - 变回原来的样子");
+    println!("\n请输入操作序号：");
+    io::stdin().read_line(&mut buf).unwrap();
+    match buf.as_mut_str().trim() {
+        "1" => {
+            recyclebin_create.0.set_value("empty", &format!("{}{}",file_cat_empty,",0")).unwrap();
+            recyclebin_create.0.set_value("full", &format!("{}{}",file_cat_full,",0")).unwrap();
+            println!("回收站变波波猫了");
+        }
+        "2" => {
+            let default_dll = "%SystemRoot%\\System32\\imageres.dll";
+            recyclebin_create.0.set_value("empty", &format!("{}{}",default_dll,",-55")).unwrap();
+            recyclebin_create.0.set_value("full", &format!("{}{}",default_dll,",-54")).unwrap();
+            println!("变回原来的样子了");
+        }
+        _ => {
+            println!("输入错误，再来一次叭");
+        }
+    }
+    
     let pop_empty:String = recyclebin_open.get_value("empty").unwrap();
     let pop_full:String = recyclebin_open.get_value("full").unwrap();
-
-    println!("empty = {} \n full = {}", pop_empty, pop_full);
-    let mut buf = String::new();
-    io::stdin().read_line(&mut buf);
+    println!("empty = {} , full = {}", pop_empty, pop_full);
+    
+    io::stdin().read_line(&mut buf).unwrap();
 }
 
 // HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\CLSID\{645FF040-5081-101B-9F08-00AA002F954E}\DefaultIcon
