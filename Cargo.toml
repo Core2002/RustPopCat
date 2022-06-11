@@ -8,3 +8,4 @@ edition = "2021"
 [dependencies]
 winreg = "0.6"
 resource = "0.5"
+winapi = { version = "0.3", features = ["winuser"] }

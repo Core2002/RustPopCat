@@ -7,6 +7,7 @@ name = "RustPopCat"
 version = "0.1.0"
 dependencies = [
  "resource",
+ "winapi",
  "winreg",
 ]
 
