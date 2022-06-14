@@ -47,9 +47,10 @@ fn main() {
                 let default_dll = "%SystemRoot%\\System32\\imageres.dll";
                 recyclebin_create.0.set_value("empty", &format!("{}{}",default_dll,",-55")).unwrap();
                 recyclebin_create.0.set_value("full", &format!("{}{}",default_dll,",-54")).unwrap();
-                _ = fs::remove_file("C:\\cat_empty.dll").expect("欸? 删除失败了? 看来需要你自己删除 C:\\cat_empty.dll 了呢");
-                _ = fs::remove_file("C:\\cat_full.dll").expect("欸? 删除失败了? 看来需要你自己删除 C:\\cat_full.dll 了呢");
-                println!("变回原来的样子了");
+
+                fs::remove_file(file_cat_empty).expect(&format!("欸? 删除失败了? 看来需要你自己删除 {} 了呢", file_cat_empty));
+                fs::remove_file(file_cat_full).expect(&format!("欸? 删除失败了? 看来需要你自己删除 {} 了呢", file_cat_full));
+                println!("回收站变回原来的样子了");
                 break;
             },
             _ => {
