@@ -2,33 +2,30 @@ extern crate winreg;
 use winreg::enums::*;
 use winreg::RegKey;
 use resource::resource;
+use std::env;
 use std::fs;
 use std::io;
 use std::io::Write;
 use std::process::{Command, Stdio};
 
 fn main() {
+    let args: Vec<String> = env::args().collect();
     let mut buf = String::new();
-    
-    let cat_ico_full = resource!("cat_full.dll");
-    let cat_ico_empty = resource!("cat_empty.dll");
 
-    let file_cat_empty = "C:\\cat_empty.dll";
-    let file_cat_full = "C:\\cat_full.dll";
-
-    if fs::write(file_cat_empty,cat_ico_empty).is_err() {
-        println!("请右键 -> 管理员身份运行 (按 Enter 退出)");
-        _ = io::stdin().read_line(&mut buf);
+    if !check_permissions_and_release_files() {
+        if args.len() > 1 {
+            println!("错误：需要管理员权限");
+        }else {
+            println!("请右键 -> 管理员身份运行 (按 Enter 退出)");
+            _ = io::stdin().read_line(&mut buf);
+        }
         std::process::exit(-1);
     }
-    
-    _ = fs::write(file_cat_full, cat_ico_full);
 
-    let reg_key = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\CLSID\\{645FF040-5081-101B-9F08-00AA002F954E}\\DefaultIcon";
-
-    let hkcu = RegKey::predef(HKEY_CURRENT_USER);
-    let recyclebin_open = hkcu.open_subkey(reg_key).unwrap();
-    let recyclebin_create = hkcu.create_subkey(reg_key).unwrap();
+    if args.len() > 1 {
+        pop_cat(&args[1]);
+        return;
+    }
 
     println!("URL: https://github.com/Core2002/RustPopCat    By: 钟小白Core");
     println!("1 - 回收站变波波猫  \t  2 - 变回原来的样子");
@@ -38,19 +35,11 @@ fn main() {
         io::stdin().read_line(&mut buf).unwrap();
         match buf.as_mut_str().trim() {
             "1" => {
-                recyclebin_create.0.set_value("empty", &format!("{}{}",file_cat_empty,",0")).unwrap();
-                recyclebin_create.0.set_value("full", &format!("{}{}",file_cat_full,",0")).unwrap();
-                println!("回收站变波波猫了");
+                pop_cat("1");
                 break;
             },
             "2" => {
-                let default_dll = "%SystemRoot%\\System32\\imageres.dll";
-                recyclebin_create.0.set_value("empty", &format!("{}{}",default_dll,",-55")).unwrap();
-                recyclebin_create.0.set_value("full", &format!("{}{}",default_dll,",-54")).unwrap();
-
-                fs::remove_file(file_cat_empty).expect(&format!("欸? 删除失败了? 看来需要你自己删除 {} 了呢", file_cat_empty));
-                fs::remove_file(file_cat_full).expect(&format!("欸? 删除失败了? 看来需要你自己删除 {} 了呢", file_cat_full));
-                println!("回收站变回原来的样子了");
+                pop_cat("0");
                 break;
             },
             _ => {
@@ -58,10 +47,7 @@ fn main() {
             }
         }
     }
-    
-    let pop_empty:String = recyclebin_open.get_value("empty").unwrap();
-    let pop_full:String = recyclebin_open.get_value("full").unwrap();
-    println!("empty = {} , full = {}", pop_empty, pop_full);
+
     println!("按 Enter 以重启资源管理器并退出");
     _ = io::stdin().read_line(&mut buf);
 
@@ -77,6 +63,49 @@ fn main() {
     stdin.write_all(b"exit\n").expect("怪死了, 还没办法执行");
     
     _ = cmd.wait();
+}
+
+
+static FILE_CAT_EMPTY: &str = "C:\\cat_empty.dll";
+static FILE_CAT_FULL: &str = "C:\\cat_full.dll";
+
+fn check_permissions_and_release_files() -> bool {
+    let cat_ico_full = resource!("cat_full.dll");
+    let cat_ico_empty = resource!("cat_empty.dll");
+
+    if fs::write(FILE_CAT_EMPTY,cat_ico_empty).is_err() {
+        return false;
+    }
+    _ = fs::write(FILE_CAT_FULL, cat_ico_full);
+
+    return true;
+}
+
+fn pop_cat(operate: &str) {
+    let reg_key = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\CLSID\\{645FF040-5081-101B-9F08-00AA002F954E}\\DefaultIcon";
+
+    let hkcu = RegKey::predef(HKEY_CURRENT_USER);
+    let recyclebin_create = hkcu.create_subkey(reg_key).unwrap();
+
+    match operate.trim() {
+        "1" => {
+            recyclebin_create.0.set_value("empty", &format!("{}{}",FILE_CAT_EMPTY,",0")).unwrap();
+            recyclebin_create.0.set_value("full", &format!("{}{}",FILE_CAT_FULL,",0")).unwrap();
+            println!("回收站变波波猫了");
+        },
+        "0" => {
+            let default_dll = "%SystemRoot%\\System32\\imageres.dll";
+            recyclebin_create.0.set_value("empty", &format!("{}{}",default_dll,",-55")).unwrap();
+            recyclebin_create.0.set_value("full", &format!("{}{}",default_dll,",-54")).unwrap();
+
+            fs::remove_file(FILE_CAT_EMPTY).expect(&format!("欸? 删除失败了? 看来需要你自己删除 {} 了呢\n", FILE_CAT_EMPTY));
+            fs::remove_file(FILE_CAT_FULL).expect(&format!("欸? 删除失败了? 看来需要你自己删除 {} 了呢\n", FILE_CAT_FULL));
+            println!("回收站变回原来的样子了");
+        },
+        _ => {
+            println!("帮助 - 命令行参数如下\n1 => 变波波猫\n0 => 还原默认");
+        }
+    }
 }
 
 // HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\CLSID\{645FF040-5081-101B-9F08-00AA002F954E}\DefaultIcon
