@@ -7,3 +7,9 @@ import App from "./App.vue";
 var app = createApp(App)
 app.use(ElementPlus)
 app.mount("#app");
+
+var block = () => {
+    return false;
+};
+document.oncontextmenu = block;
+document.onselectstart = block;
