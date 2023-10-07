@@ -1,9 +1,15 @@
 <script setup lang="ts">
 import { invoke } from "@tauri-apps/api/tauri";
+import { ElNotification } from "element-plus";
 
 async function make_pop_cat(operate: string) {
   // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
   await invoke("cmd_pop_cat", { operate: operate });
+  ElNotification({
+    title: '操作成功',
+    message: '请刷新桌面',
+    type: 'success',
+  })
 }
 </script>
 
