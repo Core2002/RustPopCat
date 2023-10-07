@@ -6,6 +6,7 @@ use std::env;
 use std::fs;
 use std::io;
 use std::io::Write;
+use std::os::windows::process::CommandExt;
 use std::process::exit;
 use std::process::{Command, Stdio};
 use winreg::enums::*;
@@ -144,6 +145,7 @@ fn gui_cli() {
 // SlimeNull <slimenull@outlook.com> 提交的代码
 fn restart_explorer() {
     let mut cmd = Command::new("cmd.exe")
+        .creation_flags(0x08000000)
         .stdin(Stdio::piped())
         .stdout(Stdio::null())
         .spawn()
